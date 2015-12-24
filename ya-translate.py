@@ -18,6 +18,13 @@ response = requests.get(url)
 data = response.json()
 code = (data['code'])
 
+class bgcolors:
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+
 file_name = 'yandex-translate-dictionary.csv'
 if code == 200:
     translate = data['text'][0]
@@ -31,7 +38,7 @@ if code == 200:
         csv_reader = csv.reader(csvfile, delimiter=',')
         for row in csv_reader:
             if len(row) > 0 and ((text == row[2] and translate == row[3]) or (text == row[3] and translate == row[2])):
-                print('This word/phrase was translated already')
+                print(bgcolors.WARNING + 'This word/phrase in your dictionary already')
                 founded = True
                 break
     if (add == '-a') and (not founded) and (text != translate):
@@ -44,8 +51,8 @@ if code == 200:
             if lang == 'ru-en':
                 csv_writer.writerow(
                         ['Russian'] + ['English'] + [text] + [translate])
-            print('Word/phrase was added to a dictionary')
+            print(bgcolors.OKGREEN + 'Word/phrase was added to a dictionary')
     elif (not founded):
-        print('If you want to add this word to local dictionary, add -a to request.')
+        print(bgcolors.OKBLUE + 'If you want to add this word to local dictionary, add -a to request.' + bgcolors.ENDC)
 else:
-    print('Wrong request!')
+    print(bgcolors.FAIL + 'Wrong request!')
